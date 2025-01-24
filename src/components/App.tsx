@@ -3,6 +3,8 @@ import Menu from './Menu';
 import GridRender from './GridRender';
 import { showHotelProperties, useHotelDataGrid } from './utils';
 import FormNewHotel from './FormNewHotel';
+import FormEditHotel from './FormEditHotel';
+
 
 if (typeof window !== 'undefined') {
     (window as any).showHotelProperties = showHotelProperties;
@@ -18,6 +20,7 @@ const App: React.FC = () => {
                 <GridRender />
             </div>
             <FormNewHotel />
+            <FormEditHotel />
         </>
     );
 }

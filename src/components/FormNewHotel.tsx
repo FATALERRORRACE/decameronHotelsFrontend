@@ -11,8 +11,8 @@ declare global {
 
 const FormNewHotel: React.FC = () => {
     const [step, setStep] = useState(1);
-
     const nextStep = () => {
+        var globalContext = this;
         switch (step) {
             case 1:
                 const formData = new FormData(document.querySelector('#form-new-hotel') as HTMLFormElement);
@@ -28,19 +28,14 @@ const FormNewHotel: React.FC = () => {
                     ])
                 );
                 break;
-            case 2:
-
-                break;
             case 3:
-
-                break;
-            case 10:
                 axios.post(`${nextConfig.apiUrl}/hotels/new`, {
                     name: JSON.parse(localStorage.getItem('newHotelData')!)[0].name,
                     address: JSON.parse(localStorage.getItem('newHotelData')!)[0].address,
                     city: JSON.parse(localStorage.getItem('newHotelData')!)[0].city,
                     nit: JSON.parse(localStorage.getItem('newHotelData')!)[0].nit,
-                    roomAmount: JSON.parse(localStorage.getItem('newHotelData')!)[0].roomAmount
+                    roomamount: JSON.parse(localStorage.getItem('newHotelData')!)[0].roomAmount,
+                    dataRooms: localStorage.getItem('dataRooms')
                 })
                     .then(response => {
                         window.useHotelDataGrid(
@@ -56,8 +51,10 @@ const FormNewHotel: React.FC = () => {
                                 ]
                             )
                         );
-                        console.log('Hotel created successfully:', response.data);
-
+                        localStorage.removeItem('newHotelData');
+                        localStorage.removeItem('dataRooms');
+                        window.showAlert();
+                        closeModal();
                     })
                     .catch(error => {
                         console.error('There was an error creating the hotel!', error);
@@ -65,12 +62,6 @@ const FormNewHotel: React.FC = () => {
                 break;
             default:
                 break;
-        }
-        if (step == 3) {
-
-            setStep(step + 1);
-            return;
-
         }
         setStep(step + 1);
     };
@@ -80,6 +71,9 @@ const FormNewHotel: React.FC = () => {
     };
     const [isModalOpen, setIsModalOpen] = useState(false);
     const closeModal = () => {
+        if(!localStorage.removeItem('newHotelData')){
+            setStep(1);
+        };
         setIsModalOpen(isModalOpen ? false : true);
     };
 
@@ -88,7 +82,13 @@ const FormNewHotel: React.FC = () => {
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-70" style={{ display: isModalOpen ? 'flex' : 'none' }}>
             <div className="bg-white p-6 rounded-lg shadow-lg size-fit">
-                <h2 className="text-2xl font-bold mb-4 text-gray-700">Registrar Nuevo Hotel</h2>
+                <div className="flex justify-between items-center mb-4">
+                    <span className="text-2xl font-bold text-gray-700">
+                        Registrar Nuevo Hotel 
+                    </span>
+                    <button type="button" className="px-2 bg-gray-300 text-white rounded-lg" onClick={closeModal}>x</button>
+                </div>
+                
                 {step === 1 && (
                     <div>
                         <h3 className="text-xl text-gray-700 mb-4 ">Paso 1: Información Básica</h3>
@@ -119,8 +119,8 @@ const FormNewHotel: React.FC = () => {
                             </div>
                         </form>
                         <div className="flex justify-between">
-                            <button type="button" className="px-4 py-2 bg-gray-300 text-white rounded-lg" disabled>
-                                Previous
+                            <button type="button" className="px-4 py-2 bg-gray-300 text-white rounded-lg" onClick={closeModal} >
+                                Cerrar
                             </button>
                             <button type="button" className="px-4 py-2 bg-blue-500 text-white rounded-lg" onClick={nextStep}>
                                 Next

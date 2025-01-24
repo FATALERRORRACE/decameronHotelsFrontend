@@ -23,7 +23,6 @@ const Menu: React.FC = () => {
         getMenuItems();
     }, []);
     return (
-
         <div className="menu-nav px-6 mt-10 mb-4" >
             <nav role="navigation" className="mb-5 border-gray-200 items-center flex justify-center">
                 <div className="items-center">

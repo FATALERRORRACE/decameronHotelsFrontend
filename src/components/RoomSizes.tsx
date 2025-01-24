@@ -17,10 +17,6 @@ const RoomSizes: React.FC = () => {
         getitems();
     }, []);
 
-    //console.log(itemsRoom);
-    //itemsRoom.map(item => {
-    //    console.log(item);
-    //});
     return (
         <div>
             <div className="p-1 flex justify-center">
