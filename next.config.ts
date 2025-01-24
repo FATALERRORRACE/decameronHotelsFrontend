@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  apiUrl: 'http://hoteles-decameron-backend.test/api'
 };
 
 export default nextConfig;

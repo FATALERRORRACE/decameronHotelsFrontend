@@ -1,6 +1,8 @@
 import axios from 'axios';
+import nextConfig from '../../next.config';
+
 export const menuItemsCall = async () => {
-    const response = await axios.get('http://hoteles-decameron.test/api/menu')
+    const response = await axios.get(`${nextConfig.apiUrl}/menu`)
     return response;
 }
 

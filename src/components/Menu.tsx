@@ -1,6 +1,12 @@
 'use client'
 import React, { useEffect, useState } from 'react';
-import { menuItemsCall, openMenuSelected } from '../services/MenuService';
+import { menuItemsCall } from '../services/MenuService';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+
+library.add(fas);
+
 interface MenuItem {
     id: number;
     label: string;
@@ -17,22 +23,29 @@ const Menu: React.FC = () => {
         getMenuItems();
     }, []);
     return (
-        <nav className="bg-gray-800 p-4">
-            <ul className="flex space-x-4">
-            {
-                menuItems.map(item => (
-                <li key={item.id}>
-                    <button 
-                        className="px-4 py-2 bg-blue-700 text-white rounded hover:bg-blue-700 hover:opacity-75"
-                        onClick={() => openMenuSelected(item.id)}
-                    >
-                    {item.label}
-                    </button>
-                </li>
-                ))
-            }
-            </ul>
-        </nav>
+
+        <div className="menu-nav px-6 mt-10 mb-4" >
+            <nav role="navigation" className="mb-5 border-gray-200 items-center flex justify-center">
+                <div className="items-center">
+                    <div className="w-64 items-center flex justify-center">
+                        <a href="/" rel="home" className="md:max-w-[200px] lg:max-w-[200px] m-4">
+                            <img src="https://www.decameron.com/images/logos/logo-decameron-all-inclusive.png" alt="Inicio" />
+                        </a>
+                    </div>
+                </div>
+            </nav>
+            <div className="shadow border rounded border-zinc-600/10 mx-3 bg-zinc-300/80 dark:bg-zinc-300/10 p-3 justify-center dark:backdrop-blur-xl backdrop-blur-sm pl-4">
+                <p className="rounded text-2xl mb-3 dark:text-zinc-400 text-zinc-700 dark:text-zinc-300"> ⓘ Sistema de Gestión de Hoteles</p>
+                {
+                    menuItems.map(item => (
+                        <button className="shadow px-3 py-2 bg-custom-btn dark:text-zinc-300 text-white rounded hover:bg-custom-hover hover:opacity-75 ml-3" 
+                            onClick={() => window.closeModal()}>
+                            <FontAwesomeIcon icon="plus" /> {item.label}
+                        </button>
+                    ))
+                }
+            </div>
+        </div>
     );
 };
 

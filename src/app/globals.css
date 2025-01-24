@@ -3,19 +3,47 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: linear-gradient(180deg, rgba(10, 9, 9, 0.2), rgba(8, 8, 8, 0.8)), url(https://www.decameron.com/images/promociones/colombia/2025/vacaciones/booking-vacaciones.jpg);
+  --background-menu: transparent;
+  --background-menu-opacity: 1;
+  --foreground: rgb(40, 40, 40);
+  --background-menu-btn-hover: #165957e1;
+  --background-menu-btn: #495a5dcc;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background-menu-opacity:0.2;
+    --background: linear-gradient(180deg, rgba(10, 9, 9, 0.8), rgba(8, 8, 8, 0.8)), url(https://www.decameron.com/images/promociones/colombia/2025/vacaciones/booking-vacaciones.jpg);
+    --foreground: ;
+    --background-menu: transparent;
+    --background-menu-btn-hover: #462e7be1;
+    --background-menu-btn: #323f41fc;
   }
 }
 
 body {
-  color: var(--foreground);
+  background-repeat: no-repeat;
+  background-repeat: no-repeat;
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  background-size: auto 100vh;
+  font-family: 'Akrobat', sans-serif;
 }
+
+.menu-nav{
+  background-repeat: no-repeat;
+  background-position: 0% 34%, center center;
+  background-size: 100vw 100vh, cover;
+  background: var(--background-menu);
+  background-repeat: no-repeat;
+  background-position: 0% 34%, center center;
+  background-size: 100vw 100vh, cover;
+}
+
+.bg-custom-btn{
+  background-color: var(--background-menu-btn);
+  
+}
+.bg-custom-hover{
+  background-color: var(--background-menu-btn-hover);
+} 
