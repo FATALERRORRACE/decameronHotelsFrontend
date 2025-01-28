@@ -48,7 +48,7 @@ const FormNewHotel: React.FC = () => {
 
     const nextStep = () => {
         if (step == 1) {
-            var label: String = '';
+            let label: string = '';
 
             switch (true) {
                 case hotelData.name == '':
@@ -77,7 +77,7 @@ const FormNewHotel: React.FC = () => {
                 ...hotelData,
                 dataRooms: localStorage.getItem('dataRooms') ? JSON.parse(localStorage.getItem('dataRooms')!) : []
             })
-                .then(response => {
+                .then( () => {
                     window.useHotelDataGrid();
                     localStorage.removeItem('dataRooms');
                     window.showAlert('Hotel Editado', 'success', true);

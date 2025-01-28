@@ -66,7 +66,7 @@ const FormNewHotel: React.FC = () => {
                     roomamount: JSON.parse(localStorage.getItem('newHotelData')!)[0].roomAmount,
                     dataRooms: localStorage.getItem('dataRooms') ? JSON.parse(localStorage.getItem('dataRooms')!) : []
                 })
-                    .then(response => {
+                    .then( () => {
                         window.useHotelDataGrid();
                         localStorage.removeItem('newHotelData');
                         localStorage.removeItem('dataRooms');

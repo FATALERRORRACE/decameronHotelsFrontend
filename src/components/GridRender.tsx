@@ -29,7 +29,7 @@ const GridRender = () => {
             const dataGrid = await listItemsCall();
             setData(dataGrid.data);
         };
-        (window as any).useHotelDataGrid = getDataGrid;
+        window.useHotelDataGrid = getDataGrid;
         getDataGrid();
     }, []);
 

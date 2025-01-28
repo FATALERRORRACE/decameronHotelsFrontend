@@ -20,19 +20,16 @@ interface AlertProperties {
 
 const Alerts = () => {
 
-    var alertMessage: String;
-    var alertType: String;
-
-    const [alertVisible, setAlertVisible] = useState({
+    const [alertVisible, setAlertVisible] = useState<AlertProperties>({
         message: '',
         type: 'info',
         show: false
     });
 
     window.showAlert = (message: string, type: string, show: boolean) => {
-        alertType = type;
+
         setAlertVisible({
-            message: message, type: type, show: true
+            message: message, type: type, show: show
         });
         setTimeout(() => {
             setAlertVisible({

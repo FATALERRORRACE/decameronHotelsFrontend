@@ -7,7 +7,7 @@ export const menuItemsCall = async () => {
 }
 
 export const openMenuSelected = async (menuId: number) => {
-    var url = '';
+    let url = '';
     switch(menuId){
         case 1:
             url = 'api/list';

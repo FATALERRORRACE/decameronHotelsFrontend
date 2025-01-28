@@ -27,9 +27,7 @@ const Menu: React.FC = () => {
             <nav role="navigation" className="mb-2 border-gray-200 items-center flex justify-center">
                 <div className="items-center">
                     <div className="w-64 items-center flex justify-center">
-                        <a href="/" rel="home" className="md:max-w-[200px] lg:max-w-[200px] m-4">
-                            <img src="https://www.decameron.com/images/logos/logo-decameron-all-inclusive.png" alt="Inicio" />
-                        </a>
+                        <img src="https://www.decameron.com/images/logos/logo-decameron-all-inclusive.png" alt="Inicio" />
                     </div>
                 </div>
             </nav>

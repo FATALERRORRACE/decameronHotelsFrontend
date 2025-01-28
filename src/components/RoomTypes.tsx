@@ -7,10 +7,11 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 
 library.add(fas);
+interface RoomTypesProperties {
+    roomAmount: number;
+}
 
-const RoomTypes: React.FC = (props) => {
-
-    var sumRooms = 0;
+const RoomTypes: React.FC<RoomTypesProperties> = (props) => {
     
     const [itemsRoomTypes, setItemsTypes] = useState<
         Array<{ id: string; label: string; isActive: boolean }>
@@ -27,7 +28,7 @@ const RoomTypes: React.FC = (props) => {
     useEffect(() => {
         const fetchData = async () => {
             const roomTypes = await getRoomTypes();
-            const initializedRoomTypes = roomTypes.map((type) => ({
+            const initializedRoomTypes = roomTypes.map((type: any) => ({
                 ...type,
                 isActive: !!dataRooms[type.id],
             }));
@@ -57,25 +58,25 @@ const RoomTypes: React.FC = (props) => {
     };
 
     const handleInputChange = (typeId: string, sizeId: string, value: string) => {
-        var numericValue = value === '' ? 0 : parseInt(value, 10) || 0;
+        const numericValue = value === '' ? 0 : parseInt(value, 10) || 0;
         const updatedDataRooms = {
             ...dataRooms,
             [typeId]: {
-                ...dataRooms[typeId], [sizeId]: numericValue == 0 ? '' : numericValue  ,
+                ...dataRooms[typeId], [sizeId]: numericValue == 0 ? 0 : numericValue  ,
             },
         };
 
         let sumRooms = 0;
         Object.values(updatedDataRooms).forEach(element => {
             Object.values(element).forEach(subelement => {
-                if(subelement != '')
+                if(typeof subelement != 'string')
                     sumRooms+= subelement;
             });
         });
 
         if(sumRooms > props.roomAmount){
             window.showAlert('La cantidad de habitaciones no puede superar ' + props.roomAmount, 'error', true);
-            updatedDataRooms[typeId][sizeId] = '';
+            delete updatedDataRooms[typeId][sizeId];
         }
 
         setDataRooms(updatedDataRooms);
