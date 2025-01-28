@@ -3,6 +3,7 @@ import axios from 'axios';
 import nextConfig from '../../next.config';
 import RoomTypes from './RoomTypes';
 import { callHotelInfo } from '../services/HotelService';
+import { useAlert } from './alerts/AlertContext';
 
 declare global {
     interface Window {
@@ -11,6 +12,7 @@ declare global {
 }
 
 const FormNewHotel: React.FC = () => {
+    const { showAlert } = useAlert(); 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [step, setStep] = useState(1);
     const [hotelData, setHotelData] = useState({
@@ -23,7 +25,7 @@ const FormNewHotel: React.FC = () => {
         dataRooms: []
     });
 
-    window.openModalEdit = async (idHotel) => {
+    const openModalEdit = async (idHotel:number) => {
         localStorage.removeItem('dataRooms');
         setIsModalOpen(true);
         const data = await callHotelInfo(idHotel as number);
@@ -41,6 +43,10 @@ const FormNewHotel: React.FC = () => {
             localStorage.setItem('dataRooms', JSON.stringify(data.data.rooms))
     };
 
+    if(typeof window != 'undefined'){
+        window.openModalEdit = openModalEdit;
+    }
+    
     const closeModalEdit = () => {
         setIsModalOpen(false);
         setStep(1);
@@ -68,7 +74,7 @@ const FormNewHotel: React.FC = () => {
                     break;
             }
             if(label != ''){
-                window.showAlert(`Ingrese el valor del campo '${label}' `, 'info', true);
+                showAlert(`Ingrese el valor del campo '${label}' `, 'info');
                 return;
             }
         }
@@ -80,7 +86,7 @@ const FormNewHotel: React.FC = () => {
                 .then( () => {
                     window.useHotelDataGrid();
                     localStorage.removeItem('dataRooms');
-                    window.showAlert('Hotel Editado', 'success', true);
+                    showAlert('Hotel Editado', 'success');
                     closeModalEdit();
                 })
                 .catch(error => {

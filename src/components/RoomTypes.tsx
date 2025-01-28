@@ -5,6 +5,7 @@ import { getRoomTypes, getRoomSizes } from '../services/RoomService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
+import { useAlert } from './alerts/AlertContext';
 
 library.add(fas);
 interface RoomTypesProperties {
@@ -12,7 +13,7 @@ interface RoomTypesProperties {
 }
 
 const RoomTypes: React.FC<RoomTypesProperties> = (props) => {
-    
+    const { showAlert } = useAlert();
     const [itemsRoomTypes, setItemsTypes] = useState<
         Array<{ id: string; label: string; isActive: boolean }>
     >([]);
@@ -75,7 +76,7 @@ const RoomTypes: React.FC<RoomTypesProperties> = (props) => {
         });
 
         if(sumRooms > props.roomAmount){
-            window.showAlert('La cantidad de habitaciones no puede superar ' + props.roomAmount, 'error', true);
+            showAlert('La cantidad de habitaciones no puede superar ' + props.roomAmount, 'error');
             delete updatedDataRooms[typeId][sizeId];
         }
 

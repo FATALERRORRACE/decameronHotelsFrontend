@@ -1,12 +1,13 @@
 'use client'
 import React from 'react';
 import App from '../components/App';
+import { AlertProvider } from '../components/alerts/AlertContext';
 
 const Page = () => {
   return (
-    <React.StrictMode>
+    <AlertProvider>
       <App />
-    </React.StrictMode>
+    </AlertProvider>
   );
 };
 

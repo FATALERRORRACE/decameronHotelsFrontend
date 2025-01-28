@@ -3,7 +3,6 @@ import Menu from './Menu';
 import GridRender from './GridRender';
 import FormNewHotel from './FormNewHotel';
 import FormEditHotel from './FormEditHotel';
-import Alerts from './Alerts';
 
 
 const App: React.FC = () => {
@@ -15,7 +14,6 @@ const App: React.FC = () => {
             </div>
             <FormNewHotel />
             <FormEditHotel />
-            <Alerts />
         </>
     );
 }

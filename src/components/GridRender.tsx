@@ -46,7 +46,7 @@ const GridRender = () => {
         },
         {
             id: 'name',
-            name: html('NOMBRE <br><input type="text" class="gridjs-input border border-gray-300 rounded p-2">'),
+            name: html('NOMBRE '),
             formatter: (_: any, row: any) =>
                 html(
                     `<a onClick="openModalEdit(${row.cells[0].data})" class="text-blue-900 hover:underline">
@@ -56,15 +56,15 @@ const GridRender = () => {
         },
         {
             id: 'nit',
-            name: html('NIT<br><input type="text" class="gridjs-input border border-gray-300 rounded p-2">'),
+            name: html('NIT'),
         },
         {
             id: 'address',
-            name: html('DIRECCIÓN <br><input type="text" class="gridjs-input border border-gray-300 rounded p-2">'),
+            name: html('DIRECCIÓN '),
         },
         {
             id: 'city',
-            name: html('CIUDAD <br><input type="text" class="gridjs-input border border-gray-300 rounded p-2">'),
+            name: html('CIUDAD '),
         },
         {
             id: 'room_amount',
@@ -79,7 +79,7 @@ const GridRender = () => {
                 columns={columns}
                 search={false}
                 pagination={{
-                    limit: 7,
+                    limit: 8,
                 }}
             />
         </>
