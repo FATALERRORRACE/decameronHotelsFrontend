@@ -68,7 +68,7 @@ const FormNewHotel: React.FC = () => {
                     break;
             }
             if(label != ''){
-                window.showAlert(`Ingrese el valor del campo '${label}' `, 'info');
+                window.showAlert(`Ingrese el valor del campo '${label}' `, 'info', true);
                 return;
             }
         }
@@ -80,7 +80,7 @@ const FormNewHotel: React.FC = () => {
                 .then(response => {
                     window.useHotelDataGrid();
                     localStorage.removeItem('dataRooms');
-                    window.showAlert('Hotel Editado', 'success');
+                    window.showAlert('Hotel Editado', 'success', true);
                     closeModalEdit();
                 })
                 .catch(error => {

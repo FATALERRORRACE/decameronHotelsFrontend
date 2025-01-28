@@ -40,7 +40,7 @@ const FormNewHotel: React.FC = () => {
                 console.log(typeof formValidation);
                 formValidation.forEach(element => {
                     if(formData.get(element.field) == ''){
-                        window.showAlert(`Ingrese el valor del campo '${element.label}' `, 'info');
+                        window.showAlert(`Ingrese el valor del campo '${element.label}' `, 'info', true);
                         throw `Ingrese el valor del campo '${element.label}'`;
                     }
                 });
@@ -70,7 +70,7 @@ const FormNewHotel: React.FC = () => {
                         window.useHotelDataGrid();
                         localStorage.removeItem('newHotelData');
                         localStorage.removeItem('dataRooms');
-                        window.showAlert('Nuevo Hotel Registrado', 'success');
+                        window.showAlert('Nuevo Hotel Registrado', 'success', true);
                         closeModal();
                     })
                     .catch(error => {

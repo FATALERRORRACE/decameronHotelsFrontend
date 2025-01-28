@@ -8,7 +8,7 @@ library.add(fas);
 
 declare global {
     interface Window {
-        showAlert: () => void;
+        showAlert: (message: string, type: string, show: boolean) => void;
     }
 }
 
@@ -29,7 +29,7 @@ const Alerts = () => {
         show: false
     });
 
-    window.showAlert = (message: '', type: 'info', show: false) => {
+    window.showAlert = (message: string, type: string, show: boolean) => {
         alertType = type;
         setAlertVisible({
             message: message, type: type, show: true

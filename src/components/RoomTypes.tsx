@@ -74,7 +74,7 @@ const RoomTypes: React.FC = (props) => {
         });
 
         if(sumRooms > props.roomAmount){
-            window.showAlert('La cantidad de habitaciones no puede superar ' + props.roomAmount, 'error');
+            window.showAlert('La cantidad de habitaciones no puede superar ' + props.roomAmount, 'error', true);
             updatedDataRooms[typeId][sizeId] = '';
         }
 
