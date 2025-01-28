@@ -12,10 +12,39 @@ declare global {
 const FormNewHotel: React.FC = () => {
     const [step, setStep] = useState(1);
     const nextStep = () => {
-        var globalContext = this;
         switch (step) {
             case 1:
                 const formData = new FormData(document.querySelector('#form-new-hotel') as HTMLFormElement);
+                const formValidation = [
+                    {
+                        field: 'name',
+                        label: 'Nombre',
+                    },
+                    {
+                        field: 'address',
+                        label: 'Dirección',
+                    },
+                    {
+                        field: 'city',
+                        label: 'Ciudad',
+                    },
+                    {
+                        field: 'nit',
+                        label: 'NIT',
+                    },
+                    {
+                        field: 'roomAmount',
+                        label: 'Cantidad de habitaciones',
+                    }
+                ];
+                console.log(typeof formValidation);
+                formValidation.forEach(element => {
+                    if(formData.get(element.field) == ''){
+                        window.showAlert(`Ingrese el valor del campo '${element.label}' `, 'info');
+                        throw `Ingrese el valor del campo '${element.label}'`;
+                    }
+                });
+
                 localStorage.setItem('newHotelData',
                     JSON.stringify([
                         {
@@ -35,25 +64,13 @@ const FormNewHotel: React.FC = () => {
                     city: JSON.parse(localStorage.getItem('newHotelData')!)[0].city,
                     nit: JSON.parse(localStorage.getItem('newHotelData')!)[0].nit,
                     roomamount: JSON.parse(localStorage.getItem('newHotelData')!)[0].roomAmount,
-                    dataRooms: localStorage.getItem('dataRooms')
+                    dataRooms: localStorage.getItem('dataRooms') ? JSON.parse(localStorage.getItem('dataRooms')!) : []
                 })
                     .then(response => {
-                        window.useHotelDataGrid(
-                            window.HotelDataGrid.concat(
-                                [
-                                    {
-                                        name: JSON.parse(localStorage.getItem('newHotelData')!)[0].name,
-                                        address: JSON.parse(localStorage.getItem('newHotelData')!)[0].address,
-                                        city: JSON.parse(localStorage.getItem('newHotelData')!)[0].city,
-                                        nit: JSON.parse(localStorage.getItem('newHotelData')!)[0].nit,
-                                        roomAmount: JSON.parse(localStorage.getItem('newHotelData')!)[0].roomAmount
-                                    }
-                                ]
-                            )
-                        );
+                        window.useHotelDataGrid();
                         localStorage.removeItem('newHotelData');
                         localStorage.removeItem('dataRooms');
-                        window.showAlert();
+                        window.showAlert('Nuevo Hotel Registrado', 'success');
                         closeModal();
                     })
                     .catch(error => {
@@ -71,9 +88,11 @@ const FormNewHotel: React.FC = () => {
     };
     const [isModalOpen, setIsModalOpen] = useState(false);
     const closeModal = () => {
-        if(!localStorage.removeItem('newHotelData')){
-            setStep(1);
-        };
+        if (localStorage.getItem('dataRooms'))
+            localStorage.removeItem('dataRooms');
+        if (localStorage.getItem('newHotelData'))
+            localStorage.removeItem('newHotelData');
+        setStep(1);
         setIsModalOpen(isModalOpen ? false : true);
     };
 
@@ -84,11 +103,11 @@ const FormNewHotel: React.FC = () => {
             <div className="bg-white p-6 rounded-lg shadow-lg size-fit">
                 <div className="flex justify-between items-center mb-4">
                     <span className="text-2xl font-bold text-gray-700">
-                        Registrar Nuevo Hotel 
+                        Registrar Nuevo Hotel
                     </span>
                     <button type="button" className="px-2 bg-gray-300 text-white rounded-lg" onClick={closeModal}>x</button>
                 </div>
-                
+
                 {step === 1 && (
                     <div>
                         <h3 className="text-xl text-gray-700 mb-4 ">Paso 1: Información Básica</h3>
@@ -123,7 +142,7 @@ const FormNewHotel: React.FC = () => {
                                 Cerrar
                             </button>
                             <button type="button" className="px-4 py-2 bg-blue-500 text-white rounded-lg" onClick={nextStep}>
-                                Next
+                                Siguiente
                             </button>
                         </div>
 
@@ -133,13 +152,13 @@ const FormNewHotel: React.FC = () => {
                     <div>
                         <h3 className="text-xl mb-2 text-gray-700">Paso 2: Habitaciones</h3>
                         <span className=" text-gray-500">Tipo de Habitación</span>
-                        <RoomTypes />
+                        <RoomTypes roomAmount={JSON.parse(localStorage.getItem('newHotelData')!)[0].roomAmount} />
                         <div className="flex justify-between">
                             <button type="button" className="px-4 py-2 bg-gray-300 text-white rounded-lg" onClick={prevStep}>
-                                Previous
+                                Anterior
                             </button>
                             <button type="button" className="px-4 py-2 bg-blue-500 text-white rounded-lg" onClick={nextStep}>
-                                Next
+                                Siguiente
                             </button>
                         </div>
                     </div>
@@ -156,10 +175,10 @@ const FormNewHotel: React.FC = () => {
                         </div>
                         <div className="flex justify-between">
                             <button type="button" className="px-4 py-2 bg-gray-300 text-white rounded-lg" onClick={prevStep}>
-                                Previous
+                                Anterior
                             </button>
                             <button type="submit" className="px-4 py-2 bg-green-500 text-white rounded-lg" onClick={nextStep}>
-                                Submit
+                                Guardar Datos
                             </button>
                         </div>
                     </div>

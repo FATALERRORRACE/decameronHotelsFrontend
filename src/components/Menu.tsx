@@ -23,8 +23,8 @@ const Menu: React.FC = () => {
         getMenuItems();
     }, []);
     return (
-        <div className="menu-nav px-6 mt-10 mb-4" >
-            <nav role="navigation" className="mb-5 border-gray-200 items-center flex justify-center">
+        <div className="menu-nav px-6 mt-10 mb-1" >
+            <nav role="navigation" className="mb-2 border-gray-200 items-center flex justify-center">
                 <div className="items-center">
                     <div className="w-64 items-center flex justify-center">
                         <a href="/" rel="home" className="md:max-w-[200px] lg:max-w-[200px] m-4">
@@ -33,7 +33,7 @@ const Menu: React.FC = () => {
                     </div>
                 </div>
             </nav>
-            <div className="shadow border rounded border-zinc-600/10 mx-3 bg-zinc-300/80 dark:bg-zinc-300/10 p-3 justify-center dark:backdrop-blur-xl backdrop-blur-sm pl-4">
+            <div className="mx-3 p-3 justify-center pl-4">
                 <p className="rounded text-2xl mb-3 dark:text-zinc-400 text-zinc-700 dark:text-zinc-300"> ⓘ Sistema de Gestión de Hoteles</p>
                 {
                     menuItems.map(item => (

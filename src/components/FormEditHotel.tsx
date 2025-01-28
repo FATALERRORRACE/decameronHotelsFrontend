@@ -6,7 +6,7 @@ import { callHotelInfo } from '../services/HotelService';
 
 declare global {
     interface Window {
-        openModalEdit: (idHotel: Number) => void;
+        openModalEdit: (idHotel: number) => void;
     }
 }
 
@@ -26,7 +26,7 @@ const FormNewHotel: React.FC = () => {
     window.openModalEdit = async (idHotel) => {
         localStorage.removeItem('dataRooms');
         setIsModalOpen(true);
-        const data = await callHotelInfo(idHotel);
+        const data = await callHotelInfo(idHotel as number);
         setHotelData({
             id: data.data.id,
             name: data.data.name,
@@ -36,33 +36,56 @@ const FormNewHotel: React.FC = () => {
             roomAmount: data.data.room_amount,
             dataRooms: data.data.rooms
         });
-        if(Object.values(data.data.rooms).length)
+
+        if (Object.values(data.data.rooms).length)
             localStorage.setItem('dataRooms', JSON.stringify(data.data.rooms))
     };
 
-    const closeModal = () => {
+    const closeModalEdit = () => {
         setIsModalOpen(false);
         setStep(1);
-    };  
+    };
 
     const nextStep = () => {
-        if(step == 3){
+        if (step == 1) {
+            var label: String = '';
+
+            switch (true) {
+                case hotelData.name == '':
+                    label = 'Nombre';
+                    break;
+                case hotelData.address == '':
+                    label = 'Dirección';
+                    break;
+                case hotelData.city == '':
+                    label = 'Ciudad';
+                    break;
+                case hotelData.nit == '':
+                    label = 'NIT';
+                    break;
+                case hotelData.roomAmount == 0:
+                    label = 'Cantidad de habitaciones';
+                    break;
+            }
+            if(label != ''){
+                window.showAlert(`Ingrese el valor del campo '${label}' `, 'info');
+                return;
+            }
+        }
+        if (step == 3) {
             axios.post(`${nextConfig.apiUrl}/hotels/${hotelData.id}/edit`, {
                 ...hotelData,
                 dataRooms: localStorage.getItem('dataRooms') ? JSON.parse(localStorage.getItem('dataRooms')!) : []
             })
-            .then(response => {
-                window.useHotelDataGrid(
-                    window.HotelDataGrid.map((value)=>
-                        value.id == hotelData.id ? hotelData : value)
-                );
-                localStorage.removeItem('dataRooms');
-                window.showAlert();
-                closeModal();
-            })
-            .catch(error => {
-                console.error('There was an error creating the hotel!', error);
-            });
+                .then(response => {
+                    window.useHotelDataGrid();
+                    localStorage.removeItem('dataRooms');
+                    window.showAlert('Hotel Editado', 'success');
+                    closeModalEdit();
+                })
+                .catch(error => {
+                    console.error('There was an error creating the hotel!', error);
+                });
         }
         setStep(step + 1);
     };
@@ -78,7 +101,7 @@ const FormNewHotel: React.FC = () => {
                     <span className="text-2xl font-bold text-gray-700">
                         Editar Hotel
                     </span>
-                    <button type="button" className="px-2 bg-gray-300 text-white rounded-lg" onClick={closeModal}>x</button>
+                    <button type="button" className="px-2 bg-gray-300 text-white rounded-lg" onClick={closeModalEdit}>x</button>
                 </div>
                 {step === 1 && (
                     <div>
@@ -111,11 +134,11 @@ const FormNewHotel: React.FC = () => {
                             </div>
                         </form>
                         <div className="flex justify-between">
-                            <button type="button" className="px-4 py-2 bg-gray-300 text-white rounded-lg" onClick={closeModal}>
+                            <button type="button" className="px-4 py-2 bg-gray-300 text-white rounded-lg" onClick={closeModalEdit}>
                                 Cerrar
                             </button>
                             <button type="button" className="px-4 py-2 bg-blue-500 text-white rounded-lg" onClick={nextStep}>
-                                Next
+                                Siguiente
                             </button>
                         </div>
                     </div>
@@ -124,20 +147,21 @@ const FormNewHotel: React.FC = () => {
                     <div>
                         <h3 className="text-xl mb-2 text-gray-700">Paso 2: Habitaciones</h3>
                         <span className=" text-gray-500">Tipo de Habitación</span>
-                        <RoomTypes />
-                        <div className="flex justify-between"></div>
-                        <button type="button" className="px-4 py-2 bg-gray-300 text-white rounded-lg" onClick={prevStep}>
-                            Previous
-                        </button>
-                        <button type="button" className="px-4 py-2 bg-blue-500 text-white rounded-lg" onClick={nextStep}>
-                            Next
-                        </button>
+                        <RoomTypes roomAmount={hotelData.roomAmount} />
+                        <div className="flex justify-between">
+                            <button type="button" className="px-4 py-2 bg-gray-300 text-white rounded-lg" onClick={prevStep}>
+                                Anterior
+                            </button>
+                            <button type="button" className="px-4 py-2 bg-blue-500 text-white rounded-lg" onClick={nextStep}>
+                                Siguiente
+                            </button>
+                        </div>
                     </div>
                 )}
                 {step === 3 && (
                     <div>
-                        <h3 className="text-xl mb-4">Paso 3: Revisar Cambios</h3>
-                        <div className="bg-gray-100 p-4 rounded-lg shadow-md mb-4">
+                        <h3 className="text-xl mb-4">Paso 3: Verificar Cambios</h3>
+                        <div className="bg-gray-100 p-6 rounded-lg shadow-xl m-4">
                             <h4 className="text-lg font-bold text-gray-800 mb-2">{hotelData.name}</h4>
                             <p><strong className='text-gray-500'>Dirección:</strong> {hotelData.address}</p>
                             <p><strong className='text-gray-500'>Ciudad:</strong> {hotelData.city}</p>
@@ -146,10 +170,10 @@ const FormNewHotel: React.FC = () => {
                         </div>
                         <div className="flex justify-between">
                             <button type="button" className="px-4 py-2 bg-gray-300 text-white rounded-lg" onClick={prevStep}>
-                                Previous
+                                Anterior
                             </button>
                             <button type="submit" className="px-4 py-2 bg-green-500 text-white rounded-lg" onClick={nextStep}>
-                                Submit
+                                Guardar Cambios
                             </button>
                         </div>
                     </div>

@@ -8,7 +8,7 @@
   --background-menu-opacity: 1;
   --foreground: rgb(40, 40, 40);
   --background-menu-btn-hover: #165957e1;
-  --background-menu-btn: #495a5dcc;
+  --background-menu-btn: #2e626bcc;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -18,7 +18,7 @@
     --foreground: ;
     --background-menu: transparent;
     --background-menu-btn-hover: #462e7be1;
-    --background-menu-btn: #323f41fc;
+    --background-menu-btn: #557479fc;
   }
 }
 
@@ -47,3 +47,12 @@ body {
 .bg-custom-hover{
   background-color: var(--background-menu-btn-hover);
 } 
+
+th.gridjs-th {
+  color: #363636 !important;
+  background-color: #cdcdcdc2 !important;
+  padding: 0.5em 1em 0.4em 1em !important;
+}
+.gridjs-footer{
+  background-color: #eae9e9f6 !important;
+}

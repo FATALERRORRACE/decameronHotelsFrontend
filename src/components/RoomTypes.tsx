@@ -1,110 +1,143 @@
-'use client'
+'use client';
+
 import React, { useEffect, useState } from 'react';
 import { getRoomTypes, getRoomSizes } from '../services/RoomService';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 
 library.add(fas);
-const RoomTypes: React.FC = () => {
 
-    const [itemsRoomTypes, setItemsTypes] = useState<Array<{ id: string, label: string, isActive: boolean }>>([]);
-    const [itemsRoomSizes, setItemsSizes] = useState<Array<{ id: string, label: string, isActive: boolean }>>([]);
-    const [activeLabels, setActiveLabels] = useState<{ [key: string]: string[] }>({});
+const RoomTypes: React.FC = (props) => {
+
+    var sumRooms = 0;
+    
+    const [itemsRoomTypes, setItemsTypes] = useState<
+        Array<{ id: string; label: string; isActive: boolean }>
+    >([]);
+    const [itemsRoomSizes, setItemsSizes] = useState<
+        Array<{ id: string; label: string; allowed_room_type: string }>
+    >([]);
+
+    const [dataRooms, setDataRooms] = useState<{ [key: string]: { [key: string]: number } }>(() => {
+        const storedData = localStorage.getItem('dataRooms');
+        return storedData ? JSON.parse(storedData) : {};
+    });
 
     useEffect(() => {
-        const getitems = async () => {
-            var callItemsTypes = await getRoomTypes();
-            callItemsTypes = callItemsTypes.map( type =>
-                localStorage.getItem('dataRooms') ?
-                    JSON.parse(localStorage.getItem('dataRooms'))[type.id] ? { ...type, isActive: !type.isActive } : type
-                : type
-            );
-            setItemsTypes(callItemsTypes);
-            const callItemsSizes = await getRoomSizes();
-            setItemsSizes(callItemsSizes);
-        };
-        getitems();
-    }, []);
+        const fetchData = async () => {
+            const roomTypes = await getRoomTypes();
+            const initializedRoomTypes = roomTypes.map((type) => ({
+                ...type,
+                isActive: !!dataRooms[type.id],
+            }));
+            setItemsTypes(initializedRoomTypes);
 
-    const updateRoomType = (itemTypes: { id: string, label: string, isActive: boolean }) => {
-        const updatedItems = itemsRoomTypes.map(type =>
+            const roomSizes = await getRoomSizes();
+            setItemsSizes(roomSizes);
+        };
+
+        fetchData();
+    }, [dataRooms]);
+
+    const updateRoomType = (itemTypes: { id: string; label: string; isActive: boolean }) => {
+        const updatedRoomTypes = itemsRoomTypes.map((type) =>
             type.id === itemTypes.id ? { ...type, isActive: !type.isActive } : type
         );
-        setItemsTypes(updatedItems);
+        setItemsTypes(updatedRoomTypes);
 
-        const newActiveLabels = localStorage.getItem('dataRooms') ? JSON.parse(localStorage.getItem('dataRooms')) : { ...activeLabels };
+        const updatedDataRooms = { ...dataRooms };
         if (!itemTypes.isActive) {
-            newActiveLabels[itemTypes.id] = [];
+            updatedDataRooms[itemTypes.id] = {};
         } else {
-            delete newActiveLabels[itemTypes.id];
+            delete updatedDataRooms[itemTypes.id];
         }
-        setActiveLabels(newActiveLabels);
-        localStorage.setItem(
-            'dataRooms', 
-            JSON.stringify(newActiveLabels)
-        );
-    }
+        setDataRooms(updatedDataRooms);
+        localStorage.setItem('dataRooms', JSON.stringify(updatedDataRooms));
+    };
 
-    const updateRoomSize = (itemTypesId: string, itemSizesId: string) => {
-        const newActiveLabels = localStorage.getItem('dataRooms') ? JSON.parse(localStorage.getItem('dataRooms')) : { ...activeLabels };
-        if (!newActiveLabels[itemTypesId]) {
-            newActiveLabels[itemTypesId] = [];
+    const handleInputChange = (typeId: string, sizeId: string, value: string) => {
+        var numericValue = value === '' ? 0 : parseInt(value, 10) || 0;
+        const updatedDataRooms = {
+            ...dataRooms,
+            [typeId]: {
+                ...dataRooms[typeId], [sizeId]: numericValue == 0 ? '' : numericValue  ,
+            },
+        };
+
+        let sumRooms = 0;
+        Object.values(updatedDataRooms).forEach(element => {
+            Object.values(element).forEach(subelement => {
+                if(subelement != '')
+                    sumRooms+= subelement;
+            });
+        });
+
+        if(sumRooms > props.roomAmount){
+            window.showAlert('La cantidad de habitaciones no puede superar ' + props.roomAmount, 'error');
+            updatedDataRooms[typeId][sizeId] = '';
         }
-        const index = newActiveLabels[itemTypesId].indexOf(itemSizesId);
-        if (index > -1) {
-            newActiveLabels[itemTypesId].splice(index, 1);
-        } else {
-            newActiveLabels[itemTypesId].push(itemSizesId);
-        }
-        setActiveLabels(newActiveLabels);
-        console.log(newActiveLabels);
-        localStorage.setItem(
-            'dataRooms', 
-            JSON.stringify(newActiveLabels)
-        );
-    }
+
+        setDataRooms(updatedDataRooms);
+        localStorage.setItem('dataRooms', JSON.stringify(updatedDataRooms));
+    };
 
     return (
         <div className="p-1 flex justify-center">
-            {
-                itemsRoomTypes.map(itemTypes => (
-                    <div className='border rounded m-2' key={itemTypes.id}>
-                        <button
-                            className={`px-4 py-2 rounded hover:bg-blue-700 hover:text-white hover:opacity-75 w-full ${itemTypes.isActive ? 'bg-green-800 text-white' : 'bg-zinc-300'}`}
-                            onClick={() => updateRoomType(itemTypes)} >
-                            {itemTypes.label} <FontAwesomeIcon icon={itemTypes.isActive ? 'check' : 'circle-xmark'} />
-                        </button>
-                        <h3 className="text-gray-500 mt-2 text-center">Acomodación</h3>
-                        {
-                            itemsRoomSizes.map(itemSizes => (
-                                <div className={`pr-4 py-2 ${itemTypes.isActive ? 'text-zinc-800' : 'text-zinc-300'}`} key={itemSizes.id}>
-                                    <input
-                                        checked={
-                                            localStorage.getItem('dataRooms') ? 
-                                            (
-                                                JSON.parse(localStorage.getItem('dataRooms'))[itemTypes.id] ? 
-                                                (
-                                                    JSON.parse(localStorage.getItem('dataRooms'))[itemTypes.id].find((element) => element == itemSizes.id) ? 
-                                                    true : 
-                                                    false
-                                                ) :
-                                                false
-                                            ): 
-                                            false 
-                                        }
-                                        disabled={!itemTypes.isActive}
-                                        type="checkbox"
-                                        className="m-2"
-                                        value={itemSizes.id}
-                                        onChange={() => updateRoomSize(itemTypes.id, itemSizes.id)} />
-                                    {itemSizes.label} <FontAwesomeIcon icon="bed" />
-                                </div>
-                            ))
+            {itemsRoomTypes.map((itemTypes) => (
+                <div className="border rounded m-2" key={itemTypes.id}>
+                    
+                    <button
+                        className={
+                            `px-4 py-2 rounded hover:bg-blue-700 hover:text-white hover:opacity-75 w-full 
+                            ${itemTypes.isActive ? 'bg-green-800 text-white' : 'bg-zinc-300'}`
                         }
-                    </div>
-                ))
-            }
+                        onClick={() => updateRoomType(itemTypes)}
+                    >
+                        {itemTypes.label}{' '}
+                        <FontAwesomeIcon icon={itemTypes.isActive ? 'check' : 'circle-xmark'} />
+                    </button>
+                    <h3 className="text-gray-500 mt-2 text-center">Acomodación:</h3>
+                    {itemsRoomSizes.map((itemSizes) => (
+                        <div
+                            className={
+                                `pr-4 py-2 flex justify-between 
+                                ${itemTypes.isActive ? 'text-zinc-800' : 'text-zinc-300'}
+                                ${itemSizes.allowed_room_type == '' ? '' : itemSizes.allowed_room_type.split(",").find((val) => val == itemTypes.id) ? '' : 'hidden'}`
+                            }
+                            key={itemSizes.id}
+                        >
+                            <div>
+                                <input
+                                    checked={
+                                        dataRooms[itemTypes.id]?.[itemSizes.id] !== undefined &&
+                                        dataRooms[itemTypes.id][itemSizes.id] > 0
+                                    }
+                                    disabled={!itemTypes.isActive}
+                                    type="checkbox"
+                                    className="m-2"
+                                    onChange={() => handleInputChange(itemTypes.id, itemSizes.id, '0')}
+                                />
+                                {itemSizes.label}
+                            </div>
+                            <input
+                                className="border border-blue-300 rounded ml-2 px-2 w-20"
+                                type="number"
+                                value={
+                                    dataRooms[itemTypes.id]?.[itemSizes.id] !== undefined
+                                        ? dataRooms[itemTypes.id][itemSizes.id]
+                                        : ''
+                                }
+                                onChange={(e) =>
+                                    handleInputChange(itemTypes.id, itemSizes.id, e.target.value)
+                                }
+                                placeholder="Cant."
+                                disabled={!itemTypes.isActive}
+                            />
+                        </div>
+                    ))}
+                </div>
+            ))}
         </div>
     );
 };
